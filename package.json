@@ -27,6 +27,7 @@
   "typings": "types/index.d.ts",
   "dependencies": {
     "dom-zindex": "^1.0.4",
+    "ua-parser-js": "^1.0.38",
     "xe-utils": "^3.5.26"
   },
   "devDependencies": {

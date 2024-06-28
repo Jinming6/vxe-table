@@ -3,9 +3,20 @@ import UtilTools from '../../tools/utils'
 import DomTools from '../../tools/dom'
 import GlobalConfig from '../../v-x-e-table/src/conf'
 import XEUtils from 'xe-utils'
+import UAParser from 'ua-parser-js'
 
 const { formatText } = UtilTools
 const { addClass, removeClass } = DomTools
+
+/**
+ * 判断是否为Mac系统
+ * @returns {boolean}
+ */
+function isMac () {
+  const parser = new UAParser()
+  const os = parser.getOS()
+  return os.name === 'Mac OS'
+}
 
 function updateDropHint (_vm, evnt) {
   const { $refs } = _vm
@@ -200,7 +211,7 @@ const renderSimplePanel = (h, _vm) => {
             },
             on: customWrapperOns
           }, colVNs),
-          h('div', {
+          !isMac() && h('div', {
             ref: 'dragHintElemRef',
             class: 'vxe-table-custom-popup--drag-hint'
           }, GlobalConfig.i18n('vxe.custom.cstmDragTarget', [_vm.dragColumn ? _vm.dragColumn.getTitle() : '']))
@@ -502,7 +513,7 @@ const renderPopupPanel = (h, _vm) => {
               }, trVNs)
             ])
           ]),
-          h('div', {
+          !isMac() && h('div', {
             ref: 'dragHintElemRef',
             class: 'vxe-table-custom-popup--drag-hint'
           }, GlobalConfig.i18n('vxe.custom.cstmDragTarget', [_vm.dragColumn ? _vm.dragColumn.getTitle() : '']))
@@ -781,6 +792,12 @@ export default {
     },
     sortDragstartEvent (evnt) {
       const img = new Image()
+      if (isMac()) {
+        img.src = '/static/other/dragFill.png'
+        if (!img.complete) {
+          return
+        }
+      }
       if (evnt.dataTransfer) {
         evnt.dataTransfer.setDragImage(img, 0, 0)
       }
